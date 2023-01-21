@@ -5,7 +5,7 @@ import (
 	"github.com/spf13/cobra"
 	"os"
 
-	SearchService "github.com/yugo-ibuki/want-article-json/src/services"
+	Service "github.com/yugo-ibuki/want-article-json/src/services"
 )
 
 // versionCmd represents the version command
@@ -18,7 +18,14 @@ var articleCmd = &cobra.Command{
 			fmt.Println("キーワードは一つだけ入力してください")
 			os.Exit(1)
 		}
-		SearchService.SearchArticle(args)
+		data, err := Service.SearchArticle(args)
+		if err != nil {
+			fmt.Println("記事の取得に失敗しました")
+			os.Exit(1)
+		}
+
+		// ファイルを作成し、jsonを書き込む
+		Service.Make(data)
 	},
 }
 

@@ -2,54 +2,33 @@ package services
 
 import (
 	"encoding/json"
+	"github.com/yugo-ibuki/want-article-json/src/structures"
 	"io"
 	"log"
 	"net/http"
-	"os"
-	"time"
 )
 
-type Item struct {
-	Title     string    `json:"title"`
-	CreatedAt time.Time `json:"created_at"`
-}
-
-func SearchArticle(args []string) {
+func SearchArticle(args []string) ([]structures.Item, error) {
 	resp, err := http.Get("https://qiita.com/api/v2/items?query=" + args[0])
 	if err != nil {
 		log.Fatal(err)
+		return nil, err
 	}
+
 	defer resp.Body.Close()
+
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		log.Fatal(err)
+		return nil, err
 	}
 
-	var data []Item
+	var data []structures.Item
 
 	if err := json.Unmarshal(body, &data); err != nil {
 		log.Fatal(err)
+		return nil, err
 	}
 
-	// dataというディレクトリがなければ作成
-	if _, err := os.Stat("data"); err != nil {
-		os.Mkdir("data", 0777)
-	}
-
-	// 日時のファイル名をdataディレクトリ配下に作成
-	time := time.Now()
-	fp, err := os.Create("data/" + time.Format("2000-01-01-15-04-05") + ".json")
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer fp.Close()
-
-	// dataをjson化
-	j, err := json.Marshal(data)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	// jsonをファイルに書き込み
-	fp.Write(j)
+	return data, nil
 }
