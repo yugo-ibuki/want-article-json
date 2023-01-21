@@ -1,9 +1,7 @@
 package cmd
 
 import (
-	"fmt"
 	"github.com/spf13/cobra"
-	"github.com/yugo-ibuki/want-article-json/src/utils"
 	"os"
 )
 
@@ -27,14 +25,4 @@ func Execute() {
 	if err != nil {
 		os.Exit(1)
 	}
-}
-
-func Root() {
-	apiKey, err := config.GetApiKey()
-	if err != nil {
-		fmt.Printf("Can't read env file: %v", err)
-	}
-
-	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
-	fmt.Println(apiKey)
 }
