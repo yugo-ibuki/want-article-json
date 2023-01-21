@@ -14,7 +14,7 @@ go mod tidy
 ```
 
 ```go
-go run main.go {keyword}
+go run main.go article {keyword}
 ```
 
 ルートにdataディレクトリに
